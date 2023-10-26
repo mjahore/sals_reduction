@@ -71,7 +71,6 @@ for i in range(x_cen-max_idx, x_cen+max_idx):
 		I_cnt[bin_id] += 1
 
 q_vals = np.zeros(int(tiff_dim/bin_size), dtype=float, order='C') 
-#Q2     = (p2 * 25.43)/(p2 - 25.43)
 Q2     = 25.43 / (p2 - 25.43)
 for i in range(int(tiff_dim/bin_size)):
 	if (I_cnt[i] == 0):
@@ -83,9 +82,10 @@ fig, ax = plt.subplots()
 ax.set_xscale('log')
 ax.set_yscale('log')
 plt.plot(q_vals, I_avg, marker="o")
-plt.ylabel(r"Scattering Intensity, I(q) (arb. units)", fontsize=16)
-plt.xlabel(r"Scattering Vector, q ($\AA^{-1}$)", fontsize=16)
+plt.ylabel(r"Scattering Intensity, I(q) (arb. units)", fontsize=14)
+plt.xlabel(r"Scattering Vector, q ($\AA^{-1}$)", fontsize=14)
 plt.show()
+fig.savefig(base_fn + "_1dsals.png")
 
 # Save reduced data
 np.savetxt(base_fn + "_reduced.dat",  np.c_[q_vals, I_avg], newline="\n", delimiter=' ')
