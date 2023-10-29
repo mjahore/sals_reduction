@@ -10,18 +10,20 @@ from skimage import io
 bin_size = 1        # size of bin (in pixels) for averaging
 px_to_mm = 0.0048   # 1 pixel = 0.0048 mm
 n_ref    = 1.3317   # Refractive index of solvent
-l_wavel  = 635.00   # Laser wavelength in nm
-p1       = 25.00    # Units: mm
-p2       = 107.00   # Units: mm
+l_wavel  = 625.00   # Laser wavelength in nm
+q2       = 102.00   # Distance from Lens 2 (L2) to detector (D) (units: mm)
+l1       = 15.00    # Distance from Sample (S) to Lens 1 (L1) (units: mm))
+l2       = 22.50    # Distance from Beamstop (BS) to L2 (units: mm)
 
 # Ensure the code is called correctly.
-if (len(sys.argv) != 4):
-	print("\n\tUsage: sals_reduction.py x_pos y_pos filename.tiff\n")
-	exit
+if (len(sys.argv) != 5):
+	print("\n\tUsage: sals_reduction.py [bs_x_pos] [bs_y_pos] [sample_filename.tiff] [background_filename.tiff]\n")
+	quit()
 else:
-	x_cen = int(sys.argv[1])
-	y_cen = int(sys.argv[2])
-	filen = sys.argv[3]
+	x_cen = int(sys.argv[1]) # Beamstop center (X) on image (units: pixel)
+	y_cen = int(sys.argv[2]) # Beamstop center (Y) on image (units: pixel)
+	filen = sys.argv[3]      # Sample filename
+	bkg   = sys.argv[4]      # Background/empty cell filename
 	base_fn, ext_fn = filen.split(".")
 
 # Read the TIFF stack.
@@ -71,12 +73,12 @@ for i in range(x_cen-max_idx, x_cen+max_idx):
 		I_cnt[bin_id] += 1
 
 q_vals = np.zeros(int(tiff_dim/bin_size), dtype=float, order='C') 
-Q2     = 25.43 / (p2 - 25.43)
 for i in range(int(tiff_dim/bin_size)):
 	if (I_cnt[i] == 0):
 		I_cnt[i] = 1
 	I_avg[i] /= I_cnt[i]
-	q_vals[i] = 4.00 * 3.14159 * n_ref / (l_wavel * 10.0) * np.sin(0.5 * (i*bin_size/2)*px_to_mm / (Q2*p1))
+	# Calculate q for each of the bins. Units: Angstrom^-1.
+	q_vals[i] = 4.00 * 3.14159 * n_ref / (l_wavel * 10.0) * np.sin(0.5 * (i*bin_size)*px_to_mm / (q2*l1/l2))
 
 fig, ax = plt.subplots()
 ax.set_xscale('log')
