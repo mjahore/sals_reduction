@@ -15,9 +15,7 @@ l1       = 30.00    # Distance from Sample (S) to Lens 1 (L1) (units: mm))
 l2       = 70.00    # Distance from Beamstop (BS) to L2 (units: mm)
 
 # For calculating q.
-p1      = 30.00
-p2      = 70.00
-q2      = (p2*25.43)/(p2 - 25.43)
+q2      = (l2*25.43)/(l2 - 25.43)
 q_coeff = 4.00*3.14158*n_ref/(10.0*l_wavel)
  
 # Ensure the code is called correctly.
@@ -97,9 +95,9 @@ for i in range(int(tiff_dim/bin_size)):
 	if (I_cnt[i] == 0):
 		I_cnt[i] = 1
 	I_avg[i] /= I_cnt[i]
+
 	# Calculate q for each of the bins. Units: Angstrom^-1.
-	#q_vals[i] = 4.00 * 3.14159 * n_ref / (l_wavel * 10.0) * np.sin(0.5 * (i*bin_size)*px_to_mm / (q2*l1/l2))
-	q_vals[i] = q_coeff * np.sin(0.5 * (i*bin_size)*px_to_mm * p2/(q2*p1))
+	q_vals[i] = q_coeff * np.sin(0.5 * (i*bin_size)*px_to_mm * l2/(q2*l1))
 
 fig, ax = plt.subplots()
 ax.set_xscale('log')
@@ -113,4 +111,4 @@ fig.savefig(base_fn + "_1dsals.png")
 # Save reduced data
 np.savetxt(base_fn + "_reduced.dat",  np.c_[q_vals, I_avg], newline="\n", delimiter=' ')
 
-exit
+quit(0)
