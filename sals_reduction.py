@@ -13,9 +13,10 @@ n_ref    = 1.3317   # Refractive index of solvent
 l_wavel  = 625.00   # Laser wavelength in nm
 l1       = 30.00    # Distance from Sample (S) to Lens 1 (L1) (units: mm))
 l2       = 70.00    # Distance from Beamstop (BS) to L2 (units: mm)
+EFL2     = 25.43    # Effective focal length of L2 (units: mm)
 
-# For calculating q.
-q2      = (l2*25.43)/(l2 - 25.43)
+# For calculating q (units: inverse Angstrom)
+q2      = (l2*EFL2)/(l2 - EFL2)
 q_coeff = 4.00*3.14158*n_ref/(10.0*l_wavel)
  
 # Ensure the code is called correctly.
